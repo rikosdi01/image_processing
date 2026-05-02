@@ -1,0 +1,24 @@
+# Virtual Environment
+.venv/
+pyvenv.cfg
+
+# PyInstaller / Build
+build/
+dist/
+*.spec
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Model AI (file besar)
+model/mask_rcnn_coco.h5
+
+# Logs
+*.log
+
+# Image outputs & temp files
+Morfologi/
+*.jpg
+*.png
+!icon.ico  # Tanda seru artinya JANGAN diignore (keep icon untuk aplikasi)
