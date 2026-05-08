@@ -90,6 +90,7 @@ A fundamental computer vision tool that uses binary thresholding algorithms to s
 All required libraries, including `tensorflow`, `opencv-python`, `rembg`, and `Pillow`, are listed in the requirements file.
 ```bash
 pip install -r requirements.txt
+```
 
 ### 2. Download Pre-Trained AI Models (Required)
 
@@ -120,10 +121,11 @@ Vision-Intelligence-Suite/
 ├── morphology.py
 ├── thresholding.py
 └── requirements.txt
+```
 
 ### 3. Run the Tools
 Navigate to the root directory and run the desired python script:
-
+```bash
 python image_convert.py
 python object_detection.py
 python morphology.py
