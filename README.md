@@ -90,3 +90,41 @@ A fundamental computer vision tool that uses binary thresholding algorithms to s
 All required libraries, including `tensorflow`, `opencv-python`, `rembg`, and `Pillow`, are listed in the requirements file.
 ```bash
 pip install -r requirements.txt
+
+### 2. Download Pre-Trained AI Models (Required)
+
+> [!IMPORTANT]  
+> To keep this repository lightweight, the heavy model weights (`*.pb`, `*.h5`) and model directories are excluded via `.gitignore`. You must download them manually to run the AI-powered tools.
+
+**A. Object Detection Model (SSD MobileNet V2)**
+1. Download the [SSD MobileNet v2 320x320 COCO](http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz) model.
+2. Extract the `.tar.gz` archive.
+3. Rename the extracted folder to `ssd_mobilenet_v2_coco`.
+4. Place this folder inside a `model/` directory in the root of your project.
+
+**B. Segmentation Model (Mask R-CNN)**
+1. Download the pre-trained `mask_rcnn_coco.h5` weights. *(Note: You can download this from the official Matterport Mask R-CNN releases).*
+2. Place the `mask_rcnn_coco.h5` file directly inside the `model/` directory.
+
+**Expected Folder Structure:**
+Before running the scripts, ensure your root directory looks like this:
+
+```text
+Vision-Intelligence-Suite/
+├── assets/
+├── model/
+│   ├── ssd_mobilenet_v2_coco/      # MobileNet V2 Model
+│   └── mask_rcnn_coco.h5           # Mask R-CNN Weights
+├── image_convert.py
+├── object_detection.py
+├── morphology.py
+├── thresholding.py
+└── requirements.txt
+
+### 3. Run the Tools
+Navigate to the root directory and run the desired python script:
+
+python image_convert.py
+python object_detection.py
+python morphology.py
+python thresholding.py
