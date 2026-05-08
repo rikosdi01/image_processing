@@ -1,24 +1,24 @@
-# Virtual Environment
+# Virtual Environments
 .venv/
-pyvenv.cfg
+env/
+venv/
 
-# PyInstaller / Build
+# PyInstaller / Build Artifacts
 build/
 dist/
 *.spec
+*.exe
 
-# Python cache
+# Machine Learning Models & Heavy Data
+model/
+ssd_mobilenet_v2_coco/
+*.pb
+*.h5
+
+# Python Cache
 __pycache__/
 *.pyc
 
-# Model AI (file besar)
-model/mask_rcnn_coco.h5
-
-# Logs
-*.log
-
-# Image outputs & temp files
-Morfologi/
-*.jpg
-*.png
-!icon.ico  # Tanda seru artinya JANGAN diignore (keep icon untuk aplikasi)
+# OS generated files
+.DS_Store
+Thumbs.db

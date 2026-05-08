@@ -159,121 +159,7 @@ def start_conversion():
     convert_images(input_folder, output_folder, output_format, watermark_path, selected_position, transparency, custom_width, custom_height, remove_bg, bg_color, apply_bg)
     messagebox.showinfo("Success", "Conversion completed successfully!")
 
-# Create main window
-root = tk.Tk()
-root.title("Image Converter with Background Removal")
-root.geometry("400x950")
-
-remove_bg_var = tk.BooleanVar(value=False)
-remove_bg_toggle = tk.Checkbutton(root, text="Remove Background", variable=remove_bg_var)
-remove_bg_toggle.pack(pady=5)
-
-apply_bg_var = tk.BooleanVar(value=False)
-apply_bg_toggle = tk.Checkbutton(root, text="Apply Background Color", variable=apply_bg_var)
-apply_bg_toggle.pack(pady=5)
-
-bg_color_var = tk.StringVar(value="(255, 255, 255)")
-bg_color_label = tk.Label(root, text="Background Color: White (Default)")
-bg_color_label.pack(pady=5)
-
-bg_color_button = tk.Button(root, text="Select Background Color", command=select_bg_color)
-bg_color_button.pack(pady=5)
-
-# Create a title label
-title_label = tk.Label(root, text="JPG to WebP Converter", font=("Arial", 16, "bold"), bg="#f7f7f7")
-title_label.pack(pady=10)
-
-# Input folder selection
-input_label = tk.Label(root, text="Input Folder (JPG):", bg="#f7f7f7")
-input_label.pack(pady=5)
-
-input_entry = tk.Entry(root, width=50)
-input_entry.pack(pady=5)
-
-input_button = tk.Button(root, text="Browse", command=select_input_folder, bg="#4CAF50", fg="white")
-input_button.pack(pady=5)
-
-# Output folder selection
-output_label = tk.Label(root, text="Output Folder (WebP):", bg="#f7f7f7")
-output_label.pack(pady=5)
-
-output_entry = tk.Entry(root, width=50)
-output_entry.pack(pady=5)
-
-output_button = tk.Button(root, text="Browse", command=select_output_folder, bg="#4CAF50", fg="white")
-output_button.pack(pady=5)
-
-output_format_var = tk.StringVar(value="original")
-output_format_label = tk.Label(root, text="Output Format:")
-output_format_label.pack(pady=5)
-
-output_format_dropdown = tk.OptionMenu(root, output_format_var, "original", "JPEG", "WebP", "PNG")
-output_format_dropdown.pack(pady=5)
-
-# Watermark toggle switch
-watermark_var = tk.BooleanVar(value=False)
-watermark_toggle = tk.Checkbutton(root, text="Use Watermark", variable=watermark_var, bg="#f7f7f7", command=lambda: toggle_watermark_fields())
-watermark_toggle.pack(pady=5)
-
-# Watermark selection
-watermark_label = tk.Label(root, text="Watermark Image:", bg="#f7f7f7")
-watermark_entry = tk.Entry(root, width=50)
-watermark_button = tk.Button(root, text="Browse", command=select_watermark, bg="#4CAF50", fg="white")
-
-# Position selection
-position_var = tk.StringVar(value="bottom right")  # Default position
-position_label = tk.Label(root, text="Watermark Position:", bg="#f7f7f7")
-
-positions = ["top left", "top right", "center", "bottom left", "bottom right"]
-
-# Function to show/hide watermark fields
-def toggle_watermark_fields():
-    if watermark_var.get():
-        watermark_label.pack(pady=5)
-        watermark_entry.pack(pady=5)
-        watermark_button.pack(pady=5)
-        position_label.pack(pady=5)
-        for pos in positions:
-            position_radio = tk.Radiobutton(root, text=pos.capitalize(), variable=position_var, value=pos, bg="#f7f7f7")
-            position_radio.pack(anchor=tk.W)  # Pack with anchor to align left
-        # Add fields for custom width, height, and transparency
-        width_label.pack(pady=5)
-        width_entry.pack(pady=5)
-        height_label.pack(pady=5)
-        height_entry.pack(pady=5)
-        transparency_label.pack(pady=5)
-        transparency_entry.pack(pady=5)
-        show_button.pack(pady=5)
-    else:
-        watermark_label.pack_forget()
-        watermark_entry.pack_forget()
-        watermark_button.pack_forget()
-        position_label.pack_forget()
-        for pos in positions:
-            for widget in root.pack_slaves():  # Remove all radio buttons
-                if isinstance(widget, tk.Radiobutton):
-                    widget.pack_forget()
-        width_label.pack_forget()
-        width_entry.pack_forget()
-        height_label.pack_forget()
-        height_entry.pack_forget()
-        transparency_label.pack_forget()
-        transparency_entry.pack_forget()
-        show_button.pack_forget()
-
-# Width and height inputs
-width_label = tk.Label(root, text="Custom Width:", bg="#f7f7f7")
-width_entry = tk.Entry(root, width=10)
-height_label = tk.Label(root, text="Custom Height:", bg="#f7f7f7")
-height_entry = tk.Entry(root, width=10)
-
-# Transparency input
-transparency_label = tk.Label(root, text="Watermark Transparency (0.0 - 1.0):", bg="#f7f7f7")
-transparency_entry = tk.Entry(root, width=10)
-transparency_entry.insert(0, "1.0")  # Default value
-
 def show_watermark_preview():
-    # Get user inputs for width, height, and transparency
     try:
         custom_width = int(width_entry.get()) if width_entry.get() else None
         custom_height = int(height_entry.get()) if height_entry.get() else None
@@ -282,7 +168,6 @@ def show_watermark_preview():
         messagebox.showerror("Error", "Please enter valid numbers for width, height, and transparency.")
         return
 
-    # Load the watermark image
     if not watermark_entry.get():
         messagebox.showerror("Error", "Please select a watermark image.")
         return
@@ -290,35 +175,131 @@ def show_watermark_preview():
     watermark_path = watermark_entry.get()
     watermark = Image.open(watermark_path).convert("RGBA")
 
-    # Resize watermark
     if custom_width and custom_height:
         watermark = watermark.resize((custom_width, custom_height), Image.LANCZOS)
 
-    # Apply transparency
     alpha = watermark.split()[3]
-    alpha = alpha.point(lambda p: p * transparency)  # Adjust transparency
+    alpha = alpha.point(lambda p: p * transparency)
     watermark.putalpha(alpha)
 
-    # Create a new window for preview
     preview_window = tk.Toplevel(root)
     preview_window.title("Watermark Preview")
 
-    # Create a blank canvas for the preview
     canvas = tk.Canvas(preview_window, width=watermark.width, height=watermark.height)
     canvas.pack()
 
-    # Create an ImageTk object and display it on the canvas
     watermark_preview = ImageTk.PhotoImage(watermark)
     canvas.create_image(0, 0, anchor=tk.NW, image=watermark_preview)
-
-    # Keep a reference to avoid garbage collection
     canvas.watermark_preview = watermark_preview
 
-show_button = tk.Button(root, text="Show Watermark", command=show_watermark_preview, bg="#4CAF50", fg="white")
+# ==========================================
+# UI SETUP & LAYOUT
+# ==========================================
 
-# Conversion button
-convert_button = tk.Button(root, text="Convert", command=start_conversion)
-convert_button.pack(side=tk.BOTTOM, pady=20)
+root = tk.Tk()
+root.title("Batch Image Converter & Watermark")
+# Ubah ukuran menjadi lebih lebar dan pendek
+root.geometry("850x600") 
 
-# Run the application
+# Judul Utama
+title_label = tk.Label(root, text="Image Converter Pro", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+# Container Utama yang dibagi 2 (Kiri dan Kanan)
+main_frame = tk.Frame(root)
+main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
+
+# --- FRAME KIRI (File & Background) ---
+left_frame = tk.Frame(main_frame)
+left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10)
+
+# Input
+tk.Label(left_frame, text="Input Folder:", font=("Arial", 10, "bold")).pack(anchor=tk.W, pady=(0, 5))
+input_entry = tk.Entry(left_frame, width=45)
+input_entry.pack(anchor=tk.W, pady=2)
+tk.Button(left_frame, text="Browse Input", command=select_input_folder, bg="#007bff", fg="white").pack(anchor=tk.W, pady=(0, 15))
+
+# Output
+tk.Label(left_frame, text="Output Folder:", font=("Arial", 10, "bold")).pack(anchor=tk.W, pady=(0, 5))
+output_entry = tk.Entry(left_frame, width=45)
+output_entry.pack(anchor=tk.W, pady=2)
+tk.Button(left_frame, text="Browse Output", command=select_output_folder, bg="#007bff", fg="white").pack(anchor=tk.W, pady=(0, 15))
+
+# Format
+tk.Label(left_frame, text="Output Format:", font=("Arial", 10, "bold")).pack(anchor=tk.W)
+output_format_var = tk.StringVar(value="original")
+output_format_dropdown = tk.OptionMenu(left_frame, output_format_var, "original", "JPEG", "WebP", "PNG")
+output_format_dropdown.pack(anchor=tk.W, pady=(0, 15))
+
+# Background Removal Section
+tk.Label(left_frame, text="Background Options:", font=("Arial", 10, "bold")).pack(anchor=tk.W, pady=(10, 5))
+remove_bg_var = tk.BooleanVar(value=False)
+tk.Checkbutton(left_frame, text="Remove Background (AI)", variable=remove_bg_var).pack(anchor=tk.W)
+
+apply_bg_var = tk.BooleanVar(value=False)
+tk.Checkbutton(left_frame, text="Apply New Background Color", variable=apply_bg_var).pack(anchor=tk.W)
+
+bg_color_var = tk.StringVar(value="(255, 255, 255)")
+bg_color_label = tk.Label(left_frame, text="Current Color: White (Default)", fg="gray")
+bg_color_label.pack(anchor=tk.W)
+tk.Button(left_frame, text="Select BG Color", command=select_bg_color).pack(anchor=tk.W, pady=(5, 0))
+
+
+# --- FRAME KANAN (Watermark) ---
+right_frame = tk.Frame(main_frame)
+right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
+
+# Fungsi Toggle Sederhana (Hanya sembunyikan container)
+def toggle_watermark_fields():
+    if watermark_var.get():
+        wm_container.pack(fill=tk.BOTH, expand=True)
+    else:
+        wm_container.pack_forget()
+
+watermark_var = tk.BooleanVar(value=False)
+tk.Checkbutton(right_frame, text="Enable Watermark", variable=watermark_var, font=("Arial", 10, "bold"), command=toggle_watermark_fields).pack(anchor=tk.W, pady=(0, 10))
+
+# Container khusus watermark agar mudah disembunyikan/dimunculkan
+wm_container = tk.Frame(right_frame)
+
+tk.Label(wm_container, text="Watermark Image:").pack(anchor=tk.W)
+watermark_entry = tk.Entry(wm_container, width=45)
+watermark_entry.pack(anchor=tk.W, pady=2)
+tk.Button(wm_container, text="Browse Watermark", command=select_watermark, bg="#17a2b8", fg="white").pack(anchor=tk.W, pady=(0, 10))
+
+# Posisi
+tk.Label(wm_container, text="Position:").pack(anchor=tk.W)
+position_var = tk.StringVar(value="bottom right")
+positions = ["top left", "top right", "center", "bottom left", "bottom right"]
+for pos in positions:
+    tk.Radiobutton(wm_container, text=pos.capitalize(), variable=position_var, value=pos).pack(anchor=tk.W)
+
+# Size & Transparency
+ukuran_frame = tk.Frame(wm_container)
+ukuran_frame.pack(anchor=tk.W, pady=10)
+
+tk.Label(ukuran_frame, text="Width:").grid(row=0, column=0, sticky="w")
+width_entry = tk.Entry(ukuran_frame, width=8)
+width_entry.grid(row=0, column=1, padx=(0, 15))
+
+tk.Label(ukuran_frame, text="Height:").grid(row=0, column=2, sticky="w")
+height_entry = tk.Entry(ukuran_frame, width=8)
+height_entry.grid(row=0, column=3)
+
+tk.Label(wm_container, text="Transparency (0.0 - 1.0):").pack(anchor=tk.W)
+transparency_entry = tk.Entry(wm_container, width=10)
+transparency_entry.insert(0, "1.0")
+transparency_entry.pack(anchor=tk.W, pady=2)
+
+tk.Button(wm_container, text="Show Watermark Preview", command=show_watermark_preview).pack(anchor=tk.W, pady=10)
+
+# Sembunyikan kontainer watermark saat awal berjalan
+wm_container.pack_forget()
+
+# --- TOMBOL CONVERT DI BAWAH ---
+bottom_frame = tk.Frame(root)
+bottom_frame.pack(fill=tk.X, side=tk.BOTTOM, pady=20)
+convert_button = tk.Button(bottom_frame, text="START CONVERSION", command=start_conversion, bg="#28a745", fg="white", font=("Arial", 12, "bold"), padx=30, pady=10)
+convert_button.pack()
+
 root.mainloop()
